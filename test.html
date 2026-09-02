@@ -1,241 +1,773 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <base target="_top">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Placement Test — NEXO AI</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-slate-900 text-slate-100 min-h-screen font-sans">
+  <title>WeSpeak Proficiency Assessment — NEXO AI</title>
+  
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- CONFIGURATION -->
-  <script>
-    // REPLACE THIS WITH YOUR DEPLOYED GOOGLE APPS SCRIPT WEB APP URL
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwbZdrpfB3FEuKTOxtvXSNh-DqL8qPYAPNpyd-MZrrlDTL3jbgp4QhpsyGJuclDhL_JLg/exec";
-  </script>
-
-  <div class="max-w-4xl mx-auto p-6">
-    <!-- Header -->
-    <header class="flex justify-between items-center border-b border-slate-700 pb-4 mb-6">
-      <h1 class="text-2xl font-bold text-indigo-400">Placement Test — NEXO AI</h1>
-      <div id="timer" class="text-xl font-mono text-amber-400 font-semibold hidden">00:00</div>
-    </header>
-
-    <!-- Registration Screen -->
-    <section id="screen-register" class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg">
-      <h2 class="text-xl font-semibold mb-4 text-white">Student Registration</h2>
-      <form id="form-register" onsubmit="startAssessment(event)" class="space-y-4">
-        <div>
-          <label class="block text-sm text-slate-400 mb-1">Full Name</label>
-          <input type="text" id="student-name" required class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white focus:outline-none focus:border-indigo-500">
-        </div>
-        <div>
-          <label class="block text-sm text-slate-400 mb-1">Email Address</label>
-          <input type="email" id="student-email" required class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white focus:outline-none focus:border-indigo-500">
-        </div>
-        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2 rounded transition">
-          Start Assessment
-        </button>
-      </form>
-    </section>
-
-    <!-- Loading Screen -->
-    <section id="screen-loading" class="hidden text-center py-12">
-      <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500 mb-4"></div>
-      <p id="loading-text" class="text-slate-400">Fetching assessment data...</p>
-    </section>
-
-    <!-- Exam Screen -->
-    <section id="screen-exam" class="hidden space-y-6">
-      <div class="flex justify-between items-center bg-slate-800 p-4 rounded-lg">
-        <span id="section-title" class="font-bold text-indigo-400 uppercase">Grammar Section</span>
-        <span id="question-tracker" class="text-sm text-slate-400">Question 1 of 25</span>
-      </div>
-
-      <div id="exam-container" class="bg-slate-800 p-6 rounded-xl border border-slate-700">
-        <!-- Dynamic Content Rendered via JS -->
-      </div>
-
-      <button onclick="nextStep()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-3 rounded transition">
-        Continue
-      </button>
-    </section>
-
-    <!-- Report Screen -->
-    <section id="screen-report" class="hidden bg-slate-800 p-6 rounded-xl border border-slate-700 space-y-6">
-      <h2 class="text-2xl font-bold text-emerald-400 text-center">Assessment Completed</h2>
-      <div id="scores-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <!-- Rendered Results -->
-      </div>
-      <div class="bg-slate-900 p-4 rounded-lg border border-slate-700">
-        <h3 class="font-semibold text-indigo-400 mb-2">Writing Evaluation Feedback</h3>
-        <p id="writing-feedback-text" class="text-slate-300 text-sm leading-relaxed"></p>
-      </div>
-    </section>
-  </div>
-
-  <script>
-    let examData = {};
-    let studentInfo = {};
-    let currentSectionIndex = 0;
-    const sections = ["Grammar", "Listening", "Reading", "Writing"];
-    let userAnswers = [];
-    let writingAnswers = { task1: "", task2: "" };
-
-    async function startAssessment(e) {
-      e.preventDefault();
-      studentInfo = {
-        name: document.getElementById('student-name').value,
-        email: document.getElementById('student-email').value
-      };
-
-      showScreen('screen-loading');
-      
-      try {
-        const response = await fetch(`${APPS_SCRIPT_URL}?action=getQuestions`);
-        const json = await response.json();
-        
-        if (json.success) {
-          examData = json.data;
-          showScreen('screen-exam');
-          renderSection();
-        } else {
-          alert('Error loading test data.');
-        }
-      } catch (err) {
-        alert('Network error connecting to backend: ' + err.message);
-      }
+  <style>
+    :root {
+      --nexo-dark: #0f172a; 
+      --nexo-navy: #1e293b; 
+      --nexo-cyan: #38bdf8; 
+      --bg-gray: #f8fafc; 
     }
 
-    function renderSection() {
-      const section = sections[currentSectionIndex];
-      document.getElementById('section-title').innerText = `${section} Section`;
-      const container = document.getElementById('exam-container');
-      container.innerHTML = '';
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--bg-gray);
+    }
 
-      if (section === 'Writing') {
-        container.innerHTML = `
-          <div class="space-y-4">
-            <h3 class="font-medium text-slate-200">Task 1: Short Email/Note (Minimum 50 words)</h3>
-            <textarea id="task1" oninput="updateWordCount('task1', 'wc1')" class="w-full bg-slate-900 border border-slate-700 rounded p-3 text-white h-28 focus:outline-none focus:border-indigo-500"></textarea>
-            <div id="wc1" class="text-xs text-slate-400 text-right">0 words</div>
+    .site-header {
+      background: linear-gradient(180deg, var(--nexo-dark) 0%, var(--nexo-navy) 100%);
+      padding: 10px 4%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      width: 100%;
+      border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+    }
 
-            <h3 class="font-medium text-slate-200 pt-4">Task 2: Essay Response (Minimum 120 words)</h3>
-            <textarea id="task2" oninput="updateWordCount('task2', 'wc2')" class="w-full bg-slate-900 border border-slate-700 rounded p-3 text-white h-40 focus:outline-none focus:border-indigo-500"></textarea>
-            <div id="wc2" class="text-xs text-slate-400 text-right">0 words</div>
+    .logo-img {
+      height: 55px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .btn-header-student {
+      border: 1.5px solid var(--nexo-cyan);
+      color: var(--nexo-cyan);
+      padding: 6px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .btn-header-student:hover {
+      background-color: var(--nexo-cyan);
+      color: var(--nexo-dark);
+    }
+
+    .fade-in {
+      animation: fadeIn 0.3s ease-in-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .option-label:has(input:checked) {
+      background-color: #e0f2fe; 
+      border-color: #38bdf8;     
+      font-weight: 600;
+    }
+
+    .mode-card:has(input:checked) {
+      border-color: #38bdf8;
+      background-color: #f0f9ff;
+    }
+  </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col justify-between">
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <a href="#" class="flex items-center">
+      <img src="https://lh3.googleusercontent.com/d/1a4L7BjmCFlmNFn-qV1oWxuNHM_C8Q6Xg" alt="Logo Institucional" class="logo-img">
+    </a>
+    <div class="flex items-center space-x-3">
+      <div id="timerDisplay" class="hidden bg-slate-900 border border-sky-400 text-sky-400 font-mono font-bold text-sm px-3 py-1 rounded-lg">
+        ⏱️ <span id="timerText">00:00</span>
+      </div>
+      <button class="btn-header-student" onclick="resetearExamen()">Reset Test</button>
+      <a href="javascript:void(0)" onclick="resetearExamen(); return false;" class="logo-container">
+        <img src="https://lh3.googleusercontent.com/d/1sVfKrSCV_fRlJEqF_Oy8pyNOhLKrfVoT" alt="Logo NEXO AI Teacher" class="logo-img">
+      </a>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="w-full max-w-6xl mx-auto px-4 my-8 flex-grow flex flex-col justify-center">
+    <div class="bg-white rounded-2xl shadow-xl p-6 sm:p-10 border border-slate-100">
+      
+      <!-- TOP HEADER -->
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pb-6 border-b border-slate-100 mb-6">
+        <div class="flex items-center space-x-4">
+          <img src="https://drive.google.com/thumbnail?id=1YZjb1miAjuFCTRaa8fZTGDSqYldzO987&sz=w800" alt="NEXO Bot" class="w-14 h-14 object-contain">
+          <div>
+            <h1 class="text-2xl font-bold text-slate-900">WeSpeak Proficiency Assessment</h1>
+            <p class="text-xs text-slate-500">Progressive multi-level evaluation (A1 to C2)</p>
           </div>
-        `;
-        return;
-      }
+        </div>
+        <span id="badgeEstado" class="px-3 py-1 bg-sky-50 text-sky-700 text-xs font-bold rounded-full border border-sky-200">
+          In Progress
+        </span>
+      </div>
 
-      const questions = examData[section] || [];
-      questions.forEach((q, idx) => {
-        const qEl = document.createElement('div');
-        qEl.className = 'mb-6 pb-4 border-b border-slate-700 last:border-0';
+      <!-- SECTION TABS -->
+      <div id="tabsContainer" class="hidden mb-6 flex overflow-x-auto gap-2 pb-2 border-b border-slate-200 text-xs font-bold">
+        <button id="tab-student" type="button" class="tab-btn bg-slate-900 text-white px-4 py-2 rounded-lg">1. Registration</button>
+        <button id="tab-grammar" type="button" class="tab-btn bg-slate-100 text-slate-500 px-4 py-2 rounded-lg" disabled>2. Grammar (20m)</button>
+        <button id="tab-listening" type="button" class="tab-btn bg-slate-100 text-slate-500 px-4 py-2 rounded-lg" disabled>3. Listening (20m)</button>
+        <button id="tab-reading" type="button" class="tab-btn bg-slate-100 text-slate-500 px-4 py-2 rounded-lg" disabled>4. Reading (20m)</button>
+        <button id="tab-writing" type="button" class="tab-btn bg-slate-100 text-slate-500 px-4 py-2 rounded-lg" disabled>5. Writing (30m)</button>
+      </div>
+
+      <!-- MAIN FORM -->
+      <form id="quizForm" onsubmit="event.preventDefault();" class="space-y-6">
         
-        let audioBtn = q.audioUrl ? `<button type="button" onclick="playTTS('${q.question}')" class="mb-2 bg-slate-700 hover:bg-slate-600 px-3 py-1 rounded text-xs text-indigo-300">🔊 Listen</button>` : '';
-        let passage = q.passage ? `<div class="bg-slate-900 p-3 rounded mb-3 text-sm text-slate-300 italic">${q.passage}</div>` : '';
-
-        qEl.innerHTML = `
-          ${passage}
-          ${audioBtn}
-          <p class="font-medium mb-3">${idx + 1}. ${q.question}</p>
-          <div class="space-y-2">
-            ${q.options.map(opt => `
-              <label class="flex items-center space-x-3 bg-slate-900 p-2 rounded cursor-pointer border border-transparent hover:border-slate-600">
-                <input type="radio" name="q_${q.id}" value="${opt}" class="form-radio text-indigo-600" onchange="recordAnswer(${q.id}, '${section}', '${opt}', '${q.correct}')">
-                <span class="text-sm text-slate-300">${opt}</span>
-              </label>
-            `).join('')}
+        <!-- REGISTRATION & MODE SELECTOR -->
+        <div id="sec-student" class="sec-block fade-in space-y-6">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900 border-b border-slate-200 pb-2">Student Information</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Student ID / Passport</label>
+                <input type="text" id="studentId" required placeholder="e.g. 123456" class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Full Name</label>
+                <input type="text" id="studentName" required placeholder="e.g. John Doe" class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Email Address</label>
+                <input type="email" id="studentEmail" required placeholder="example@email.com" class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl text-sm">
+              </div>
+            </div>
           </div>
-        `;
-        container.appendChild(qEl);
+
+          <!-- EVALUATION MODE -->
+          <div>
+            <h3 class="text-sm font-bold text-slate-900 mb-3">Select Evaluation Mode</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <label class="mode-card flex items-start space-x-3 bg-slate-50 p-4 rounded-xl border-2 border-slate-200 cursor-pointer transition">
+                <input type="radio" name="evalMode" value="full" checked onchange="actualizarModoEvaluacion()" class="accent-sky-600 h-4 w-4 mt-1">
+                <div>
+                  <span class="block text-sm font-bold text-slate-800">Complete Assessment</span>
+                  <span class="block text-xs text-slate-500">Grammar (20m), Listening (20m), Reading (20m), Writing (30m).</span>
+                </div>
+              </label>
+
+              <label class="mode-card flex items-start space-x-3 bg-slate-50 p-4 rounded-xl border-2 border-slate-200 cursor-pointer transition">
+                <input type="radio" name="evalMode" value="writing_only" onchange="actualizarModoEvaluacion()" class="accent-sky-600 h-4 w-4 mt-1">
+                <div>
+                  <span class="block text-sm font-bold text-slate-800">Writing Only</span>
+                  <span class="block text-xs text-slate-500">2 Tasks (Short note & Persuasive Essay — 30 minutes).</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <div id="fullModeOptions" class="pt-2">
+            <label class="inline-flex items-center space-x-2 cursor-pointer bg-slate-50 p-3 rounded-xl border border-slate-200 w-full">
+              <input type="checkbox" id="includeWriting" checked onchange="actualizarVistaSeccion()" class="accent-sky-600 h-4 w-4 rounded">
+              <span class="text-xs font-semibold text-slate-700">Include Writing Section in Complete Assessment</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- DYNAMIC SECTIONS -->
+        <div id="sec-grammar" class="sec-block hidden space-y-6 fade-in"></div>
+        <div id="sec-listening" class="sec-block hidden space-y-6 fade-in"></div>
+        <div id="sec-reading" class="sec-block hidden space-y-6 fade-in"></div>
+        <div id="sec-writing" class="sec-block hidden space-y-6 fade-in"></div>
+
+        <div id="loadingText" class="text-center text-slate-400 py-12">Loading NEXO test structure...</div>
+
+        <!-- NAVIGATION BUTTONS -->
+        <div id="navButtons" class="hidden pt-6 border-t border-slate-100 flex items-center justify-between gap-4">
+          <button id="btnPrev" type="button" onclick="cambiarSeccion(-1)" class="bg-slate-200 text-slate-700 font-bold px-6 py-3 rounded-xl hover:bg-slate-300 transition text-sm">
+            ← Previous
+          </button>
+          
+          <button id="btnNext" type="button" onclick="cambiarSeccion(1)" class="bg-sky-500 text-slate-950 font-bold px-8 py-3 rounded-xl hover:bg-sky-400 transition text-sm shadow-md">
+            Next →
+          </button>
+
+          <button id="btnEnviar" type="button" onclick="enviarExamen()" class="hidden bg-slate-900 text-white font-bold px-8 py-3 rounded-xl hover:bg-slate-800 transition text-sm shadow-md">
+            Submit Test 🚀
+          </button>
+        </div>
+
+      </form>
+
+      <!-- RESULTS SECTION -->
+      <div id="resultadosContainer" class="hidden space-y-6 pt-4">
+        <div class="bg-slate-900 text-white p-6 rounded-2xl shadow-md border-l-4 border-sky-400">
+          <h2 class="text-xl font-bold text-sky-400 mb-1">Assessment Completed!</h2>
+          <p class="text-xs text-slate-300">Official performance report generated by NEXO AI.</p>
+        </div>
+
+        <div id="detallesResultados" class="space-y-4"></div>
+
+        <div class="pt-4 text-center">
+          <button onclick="resetearExamen()" class="bg-sky-500 hover:bg-sky-600 text-slate-950 font-bold px-6 py-3 rounded-xl transition shadow-md">
+            Take Another Test
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="w-full bg-slate-900 text-slate-400 py-6 px-4 mt-auto border-t-4 border-sky-400 text-center text-xs space-y-2">
+    <p class="font-medium text-white text-sm">NEXO AI Teacher — Powered Learning Platform</p>
+    <p>© 2026 All rights reserved. Developed by German Andres Peña Troconis</p>
+  </footer>
+
+  <script>
+    // REEMPLAZA ESTA URL CON TU URL DE IMPLEMENTACIÓN DE GOOGLE APPS SCRIPT
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwbZdrpfB3FEuKTOxtvXSNh-DqL8qPYAPNpyd-MZrrlDTL3jbgp4QhpsyGJuclDhL_JLg/exec";
+
+    const MASCOTA = {
+      happy: 'https://drive.google.com/thumbnail?id=1YZjb1miAjuFCTRaa8fZTGDSqYldzO987&sz=w800'
+    };
+
+    const TIEMPOS_SECCION = {
+      grammar: 20 * 60,
+      listening: 20 * 60,
+      reading: 20 * 60,
+      writing: 30 * 60
+    };
+
+    let ordenSecciones = ['student', 'grammar', 'listening', 'reading', 'writing'];
+    let seccionActualIdx = 0;
+    let examDataGlobal = null;
+    let timerInterval = null;
+    let tiempoRestante = 0;
+
+    window.onload = function() {
+      cargarPreguntas();
+    };
+
+    function cargarPreguntas() {
+      fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'getQuestions' })
+      })
+      .then(res => res.json())
+      .then(res => {
+        if (res.status === 'success') {
+          renderizarExamen(res.data);
+        } else {
+          throw new Error(res.message);
+        }
+      })
+      .catch(err => {
+        document.getElementById('loadingText').innerHTML = 
+          `<p class="text-rose-500">Error loading exam: ${err.message}</p>`;
       });
     }
 
-    function recordAnswer(id, section, selected, correct) {
-      userAnswers = userAnswers.filter(a => a.id !== id);
-      userAnswers.push({ id, section, selected, correct });
+    function renderizarExamen(data) {
+      examDataGlobal = data;
+
+      document.getElementById('loadingText').classList.add('hidden');
+      document.getElementById('tabsContainer').classList.remove('hidden');
+      document.getElementById('navButtons').classList.remove('hidden');
+
+      ['grammar', 'listening', 'reading', 'writing'].forEach(secKey => {
+        const items = data[secKey] || [];
+        const secDiv = document.getElementById(`sec-${secKey}`);
+        
+        if (!items || items.length === 0) {
+          secDiv.innerHTML = `<p class="text-slate-400 text-xs italic">No questions available in ${secKey.toUpperCase()}.</p>`;
+          return;
+        }
+
+        let secHtml = `<h2 class="text-lg font-bold text-slate-900 border-b border-slate-200 pb-2 uppercase">${secKey} Section</h2>`;
+
+        if (secKey === 'writing') {
+          secHtml += `
+            <div class="space-y-6">
+              <div id="qbox_task1" class="bg-slate-50 border border-slate-200 p-5 rounded-2xl space-y-3">
+                <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+                  <span class="bg-slate-900 text-sky-400 font-bold text-xs px-3 py-1 rounded-md">Task 1 (50-75 words)</span>
+                  <span class="text-xs text-slate-500 font-medium">Suggested time: 5 mins</span>
+                </div>
+                <p class="text-sm font-semibold text-slate-800">
+                  ${items[0]?.pregunta || 'Write a short letter or note regarding a course accommodation issue to your coordinator.'}
+                </p>
+                <textarea name="q_writing_1" id="q_writing_1" rows="4" oninput="contarPalabras(this, 'wordCount1')"
+                          placeholder="Type your response for Task 1 here..." 
+                          class="w-full p-3 bg-white border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-sky-500"></textarea>
+                <p class="text-xs text-slate-500 text-right">Word count: <span id="wordCount1" class="font-bold text-slate-700">0</span> / 75</p>
+              </div>
+
+              <div id="qbox_task2" class="bg-slate-50 border border-slate-200 p-5 rounded-2xl space-y-3">
+                <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+                  <span class="bg-slate-900 text-sky-400 font-bold text-xs px-3 py-1 rounded-md">Task 2 (175-225 words)</span>
+                  <span class="text-xs text-slate-500 font-medium">Suggested time: 20 mins</span>
+                </div>
+                <p class="text-sm font-semibold text-slate-800">
+                  ${items[1]?.pregunta || 'Write a persuasive essay expressing your opinion on a given topic. Support your argument with reasons and specific examples.'}
+                </p>
+                <textarea name="q_writing_2" id="q_writing_2" rows="8" oninput="contarPalabras(this, 'wordCount2')"
+                          placeholder="Type your persuasive essay for Task 2 here..." 
+                          class="w-full p-3 bg-white border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-sky-500"></textarea>
+                <p class="text-xs text-slate-500 text-right">Word count: <span id="wordCount2" class="font-bold text-slate-700">0</span> / 225</p>
+              </div>
+            </div>`;
+        } 
+        else if (secKey === 'reading') {
+          const pasajes = {};
+          items.forEach(q => {
+            const ctxKey = q.contexto || 'Passage';
+            if (!pasajes[ctxKey]) pasajes[ctxKey] = [];
+            pasajes[ctxKey].push(q);
+          });
+
+          let globalQIndex = 1;
+          Object.keys(pasajes).forEach(pasajeTexto => {
+            secHtml += `
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6 items-start">
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 md:sticky md:top-24 max-h-[75vh] overflow-y-auto shadow-sm">
+                  <div class="flex items-center space-x-2 border-b border-slate-200 pb-3 mb-4">
+                    <span class="text-lg">📖</span>
+                    <h3 class="text-xs font-bold text-sky-700 uppercase tracking-wide">Reading Passage</h3>
+                  </div>
+                  <div class="text-sm text-slate-800 leading-relaxed space-y-3 font-normal">
+                    ${pasajeTexto.replace(/\n/g, '<br>')}
+                  </div>
+                </div>
+
+                <div class="space-y-4">`;
+
+            pasajes[pasajeTexto].forEach(q => {
+              const qIdStr = String(q.id).trim();
+              const opciones = [
+                { label: 'A', text: q.opcionA },
+                { label: 'B', text: q.opcionB },
+                { label: 'C', text: q.opcionC },
+                { label: 'D', text: q.opcionD }
+              ].filter(o => o.text);
+
+              let optionsHtml = '<div class="grid grid-cols-1 gap-2 pt-1">';
+              opciones.forEach(opc => {
+                optionsHtml += `
+                  <label class="option-label flex items-center space-x-3 bg-white p-3 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50 transition">
+                    <input type="radio" name="q_${qIdStr}" value="${opc.label}" class="accent-sky-600 h-4 w-4">
+                    <span class="text-xs text-slate-700 font-medium"><strong>${opc.label})</strong> ${opc.text}</span>
+                  </label>`;
+              });
+              optionsHtml += '</div>';
+
+              secHtml += `
+                <div id="qbox_${qIdStr}" class="bg-slate-50 border border-slate-200 p-4 rounded-2xl space-y-3">
+                  <div class="flex items-center space-x-2 border-b border-slate-200 pb-2">
+                    <span class="bg-slate-900 text-sky-400 font-bold text-xs px-2 py-0.5 rounded-md">${globalQIndex}</span>
+                    <p class="text-sm font-semibold text-slate-800">${q.pregunta}</p>
+                  </div>
+                  ${optionsHtml}
+                </div>`;
+              globalQIndex++;
+            });
+
+            secHtml += `</div></div>`;
+          });
+        } 
+        else {
+          items.forEach((q, index) => {
+            const qIdStr = String(q.id).trim();
+            let optionsHtml = '';
+            
+            if (q.contexto) {
+              if (secKey === 'listening') {
+                const cleanText = escapeQuotes(q.contexto);
+                secHtml += `
+                  <div class="bg-sky-50 border border-sky-200 p-4 rounded-xl mb-3 flex items-center justify-between shadow-sm">
+                    <div class="flex items-center space-x-3">
+                      <span class="text-2xl">🎧</span>
+                      <div>
+                        <p class="text-xs font-bold text-slate-800 uppercase">Audio Track ${index + 1}</p>
+                        <p class="text-[11px] text-slate-500">Listen carefully before answering.</p>
+                      </div>
+                    </div>
+                    <button type="button" onclick="reproducirAudio('${cleanText}')" 
+                            class="bg-sky-500 hover:bg-sky-600 text-slate-950 font-bold px-4 py-2 rounded-lg text-xs transition shadow flex items-center space-x-1">
+                      <span>Play Audio</span> 🔊
+                    </button>
+                  </div>`;
+              } else {
+                secHtml += `<div class="bg-slate-100 p-3 rounded-xl text-xs text-slate-600 italic mb-2">${q.contexto}</div>`;
+              }
+            }
+
+            const opciones = [
+              { label: 'A', text: q.opcionA },
+              { label: 'B', text: q.opcionB },
+              { label: 'C', text: q.opcionC },
+              { label: 'D', text: q.opcionD }
+            ].filter(o => o.text);
+
+            optionsHtml = '<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">';
+            opciones.forEach(opc => {
+              optionsHtml += `
+                <label class="option-label flex items-center space-x-3 bg-white p-3 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50 transition">
+                  <input type="radio" name="q_${qIdStr}" value="${opc.label}" class="accent-sky-600 h-4 w-4">
+                  <span class="text-xs text-slate-700 font-medium"><strong>${opc.label})</strong> ${opc.text}</span>
+                </label>`;
+            });
+            optionsHtml += '</div>';
+
+            secHtml += `
+              <div id="qbox_${qIdStr}" class="bg-slate-50 border border-slate-200 p-4 rounded-2xl space-y-3">
+                <div class="flex items-center space-x-2 border-b border-slate-200 pb-2">
+                  <span class="bg-slate-900 text-sky-400 font-bold text-xs px-2 py-0.5 rounded-md">${index + 1}</span>
+                  <p class="text-sm font-semibold text-slate-800">${q.pregunta}</p>
+                </div>
+                ${optionsHtml}
+              </div>`;
+          });
+        }
+
+        secDiv.innerHTML = secHtml;
+      });
+
+      actualizarVistaSeccion();
     }
 
-    function updateWordCount(inputId, targetId) {
-      const text = document.getElementById(inputId).value.trim();
-      const count = text ? text.split(/\s+/).length : 0;
-      document.getElementById(targetId).innerText = `${count} words`;
+    function contarPalabras(textarea, displayId) {
+      const texto = textarea.value.trim();
+      const numPalabras = texto ? texto.split(/\s+/).length : 0;
+      document.getElementById(displayId).textContent = numPalabras;
     }
 
-    function playTTS(text) {
-      const msg = new SpeechSynthesisUtterance(text);
-      msg.lang = 'en-US';
-      window.speechSynthesis.speak(msg);
+    function iniciarTimer(segundos) {
+      detenerTimer();
+      tiempoRestante = segundos;
+      const display = document.getElementById('timerDisplay');
+      const text = document.getElementById('timerText');
+      display.classList.remove('hidden');
+
+      timerInterval = setInterval(() => {
+        if (tiempoRestante <= 0) {
+          detenerTimer();
+          alert("Time is up for this section! Moving to the next section.");
+          const ultimaSeccion = ordenSecciones[ordenSecciones.length - 1];
+          if (ordenSecciones[seccionActualIdx] === ultimaSeccion) {
+            enviarExamen();
+          } else {
+            cambiarSeccion(1);
+          }
+          return;
+        }
+
+        tiempoRestante--;
+        const mins = Math.floor(tiempoRestante / 60);
+        const secs = tiempoRestante % 60;
+        text.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+      }, 1000);
     }
 
-    async function nextStep() {
-      if (sections[currentSectionIndex] === 'Writing') {
-        writingAnswers.task1 = document.getElementById('task1').value;
-        writingAnswers.task2 = document.getElementById('task2').value;
-        await submitExam();
-        return;
+    function detenerTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+      document.getElementById('timerDisplay').classList.add('hidden');
+    }
+
+    function actualizarModoEvaluacion() {
+      const isWritingOnly = document.querySelector('input[name="evalMode"]:checked').value === 'writing_only';
+      const fullModeOptions = document.getElementById('fullModeOptions');
+
+      if (isWritingOnly) {
+        fullModeOptions.classList.add('hidden');
+        ordenSecciones = ['student', 'writing'];
+      } else {
+        fullModeOptions.classList.remove('hidden');
+        const includeWriting = document.getElementById('includeWriting').checked;
+        ordenSecciones = includeWriting 
+          ? ['student', 'grammar', 'listening', 'reading', 'writing']
+          : ['student', 'grammar', 'listening', 'reading'];
       }
 
-      currentSectionIndex++;
-      if (currentSectionIndex < sections.length) {
-        renderSection();
-        window.scrollTo(0, 0);
+      actualizarVistaSeccion();
+    }
+
+    function reproducirAudio(texto) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const msg = new SpeechSynthesisUtterance(texto);
+        msg.lang = 'en-US';
+        msg.rate = 0.9;
+        window.speechSynthesis.speak(msg);
+      } else {
+        alert("Your browser does not support text-to-speech functionality.");
       }
     }
 
-    async function submitExam() {
-      showScreen('screen-loading');
-      document.getElementById('loading-text').innerText = 'Evaluating responses with AI...';
+    function escapeQuotes(str) {
+      return str.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, ' ');
+    }
+
+    function cambiarSeccion(dir) {
+      if (dir === 1 && seccionActualIdx === 0) {
+        const id = document.getElementById('studentId').value.trim();
+        const name = document.getElementById('studentName').value.trim();
+        const email = document.getElementById('studentEmail').value.trim();
+
+        if (!id || !name || !email) {
+          alert("Please complete all registration fields before proceeding.");
+          return;
+        }
+      }
+
+      seccionActualIdx += dir;
+      actualizarVistaSeccion();
+    }
+
+    function actualizarVistaSeccion() {
+      const mode = document.querySelector('input[name="evalMode"]:checked')?.value || 'full';
+      const includeWriting = document.getElementById('includeWriting').checked;
+
+      if (mode === 'writing_only') {
+        ordenSecciones = ['student', 'writing'];
+      } else {
+        ordenSecciones = includeWriting 
+          ? ['student', 'grammar', 'listening', 'reading', 'writing']
+          : ['student', 'grammar', 'listening', 'reading'];
+      }
+
+      document.querySelectorAll('.sec-block').forEach(el => el.classList.add('hidden'));
+
+      const secActualName = ordenSecciones[seccionActualIdx];
+      if (secActualName && document.getElementById(`sec-${secActualName}`)) {
+        document.getElementById(`sec-${secActualName}`).classList.remove('hidden');
+      }
+
+      ['student', 'grammar', 'listening', 'reading', 'writing'].forEach(sec => {
+        const tabBtn = document.getElementById(`tab-${sec}`);
+        if (!ordenSecciones.includes(sec)) {
+          tabBtn.classList.add('hidden');
+        } else {
+          tabBtn.classList.remove('hidden');
+          const idxEnOrden = ordenSecciones.indexOf(sec);
+          tabBtn.className = idxEnOrden === seccionActualIdx 
+            ? "tab-btn bg-slate-900 text-white px-4 py-2 rounded-lg"
+            : "tab-btn bg-slate-100 text-slate-500 px-4 py-2 rounded-lg";
+        }
+      });
+
+      if (secActualName !== 'student' && TIEMPOS_SECCION[secActualName]) {
+        iniciarTimer(TIEMPOS_SECCION[secActualName]);
+      } else {
+        detenerTimer();
+      }
+
+      document.getElementById('btnPrev').style.visibility = seccionActualIdx === 0 ? 'hidden' : 'visible';
+      
+      const ultimaSeccion = ordenSecciones[ordenSecciones.length - 1];
+      if (secActualName === ultimaSeccion) {
+        document.getElementById('btnNext').classList.add('hidden');
+        document.getElementById('btnEnviar').classList.remove('hidden');
+      } else {
+        document.getElementById('btnNext').classList.remove('hidden');
+        document.getElementById('btnEnviar').classList.add('hidden');
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function enviarExamen() {
+      detenerTimer();
+      const btn = document.getElementById('btnEnviar');
+      btn.disabled = true;
+      btn.innerHTML = `<span>Evaluating responses...</span>`;
+
+      const mode = document.querySelector('input[name="evalMode"]:checked').value;
+      const includeWriting = (mode === 'writing_only') || document.getElementById('includeWriting').checked;
+
+      const student = {
+        id: document.getElementById('studentId').value.trim(),
+        name: document.getElementById('studentName').value.trim(),
+        email: document.getElementById('studentEmail').value.trim()
+      };
+
+      const userAnswers = {};
+
+      if (mode === 'writing_only' || includeWriting) {
+        const task1 = document.getElementById('q_writing_1')?.value.trim() || '';
+        const task2 = document.getElementById('q_writing_2')?.value.trim() || '';
+        userAnswers['writing_task1'] = task1;
+        userAnswers['writing_task2'] = task2;
+      }
+
+      if (mode === 'full') {
+        ['grammar', 'listening', 'reading'].forEach(secKey => {
+          (examDataGlobal[secKey] || []).forEach(q => {
+            const qIdStr = String(q.id).trim();
+            const selected = document.querySelector(`input[name="q_${qIdStr}"]:checked`);
+            userAnswers[qIdStr] = selected ? String(selected.value).trim() : '';
+          });
+        });
+      }
 
       const payload = {
-        student: studentInfo,
+        student: student,
         answers: userAnswers,
-        writingTasks: writingAnswers
+        examData: examDataGlobal,
+        includeWriting: includeWriting,
+        evalMode: mode
       };
 
-      try {
-        const response = await fetch(APPS_SCRIPT_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify(payload)
-        });
-        
-        const json = await response.json();
-        if (json.success) {
-          renderReport(json.data);
+      fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'submitExam',
+          payload: payload
+        })
+      })
+      .then(res => res.json())
+      .then(res => {
+        if (res.status === 'success') {
+          mostrarResultados(res.data);
         } else {
-          alert('Submission error: ' + json.error);
+          throw new Error(res.message);
         }
-      } catch (err) {
-        alert('Network error submitting test: ' + err.message);
+      })
+      .catch(err => {
+        btn.disabled = false;
+        btn.innerHTML = `<span>Submit Test 🚀</span>`;
+        alert("Error processing submission: " + err.message);
+      });
+    }
+
+    function mostrarResultados(res) {
+      detenerTimer();
+      document.getElementById('quizForm').classList.add('hidden');
+      document.getElementById('tabsContainer').classList.add('hidden');
+      document.getElementById('badgeEstado').textContent = "Completed";
+      document.getElementById('badgeEstado').className = "px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-full border border-emerald-200";
+
+      const container = document.getElementById('detallesResultados');
+      const levels = res.cefrLevels || {};
+      
+      let scoresGridHtml = '';
+      if (res.scores.overall !== undefined) {
+        scoresGridHtml = `
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center pt-2">
+            
+            <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+              <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wide">Grammar</span>
+              <div class="my-1">
+                <span class="text-sm font-bold text-slate-800 block">${res.scores.grammar} <span class="text-xs text-slate-400 font-normal">/ 6.0</span></span>
+              </div>
+              <span class="inline-block bg-sky-100 text-sky-800 text-xs font-extrabold px-2.5 py-0.5 rounded-full border border-sky-200 mt-1">
+                ${levels.grammar || 'N/A'}
+              </span>
+            </div>
+
+            <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+              <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wide">Listening</span>
+              <div class="my-1">
+                <span class="text-sm font-bold text-slate-800 block">${res.scores.listening} <span class="text-xs text-slate-400 font-normal">/ 6.0</span></span>
+              </div>
+              <span class="inline-block bg-emerald-100 text-emerald-800 text-xs font-extrabold px-2.5 py-0.5 rounded-full border border-emerald-200 mt-1">
+                ${levels.listening || 'N/A'}
+              </span>
+            </div>
+
+            <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+              <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wide">Reading</span>
+              <div class="my-1">
+                <span class="text-sm font-bold text-slate-800 block">${res.scores.reading} <span class="text-xs text-slate-400 font-normal">/ 6.0</span></span>
+              </div>
+              <span class="inline-block bg-amber-100 text-amber-800 text-xs font-extrabold px-2.5 py-0.5 rounded-full border border-amber-200 mt-1">
+                ${levels.reading || 'N/A'}
+              </span>
+            </div>
+
+            <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+              <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wide">Writing</span>
+              <div class="my-1">
+                <span class="text-sm font-bold text-slate-800 block">${res.scores.writing} <span class="text-xs text-slate-400 font-normal">/ 6.0</span></span>
+              </div>
+              <span class="inline-block bg-purple-100 text-purple-800 text-xs font-extrabold px-2.5 py-0.5 rounded-full border border-purple-200 mt-1">
+                ${levels.writing || 'N/A'}
+              </span>
+            </div>
+
+          </div>`;
+      } else {
+        scoresGridHtml = `
+          <div class="bg-white p-4 rounded-xl border border-slate-200 text-center flex justify-between items-center px-6">
+            <div>
+              <span class="block text-xs font-semibold text-slate-400 uppercase">Writing Score</span>
+              <strong class="text-lg text-slate-800">${res.scores.writing} / 6.0</strong>
+            </div>
+            <span class="inline-block bg-purple-100 text-purple-800 text-sm font-extrabold px-3 py-1 rounded-full border border-purple-200">
+              ${levels.writing || 'N/A'}
+            </span>
+          </div>`;
       }
-    }
 
-    function renderReport(data) {
-      showScreen('screen-report');
-      const grid = document.getElementById('scores-grid');
-      grid.innerHTML = '';
+      const globalCEFR = levels.overall || res.cefr.code;
 
-      ['Grammar', 'Listening', 'Reading', 'Writing'].forEach(sec => {
-        grid.innerHTML += `
-          <div class="bg-slate-900 p-4 rounded-lg text-center border border-slate-700">
-            <div class="text-xs text-slate-400 uppercase font-semibold mb-1">${sec}</div>
-            <div class="text-2xl font-bold text-indigo-400">${data[sec]} / 6.0</div>
-            <div class="inline-block mt-2 bg-indigo-900/50 text-indigo-300 text-xs px-2 py-1 rounded font-mono">${data.cefr[sec]}</div>
+      container.innerHTML = `
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-4">
+          <div class="flex items-center space-x-4">
+            <img src="${MASCOTA.happy}" class="w-14 h-14 object-contain">
+            <div>
+              <h3 class="text-lg font-bold text-slate-900">Overall Score: ${res.scores.overall || res.scores.writing} / 6.0</h3>
+              <p class="text-sm font-semibold text-sky-600">Assigned Global Level: ${globalCEFR} — ${res.cefr.name}</p>
+              <p class="text-xs text-slate-500">${res.cefr.desc}</p>
+            </div>
           </div>
-        `;
-      });
+          
+          ${scoresGridHtml}
 
-      document.getElementById('writing-feedback-text').innerText = data.writingFeedback || 'No qualitative feedback available.';
+          <div class="bg-white p-4 rounded-xl border border-slate-200">
+            <h4 class="text-xs font-bold text-slate-700 mb-1">Qualitative Feedback (NEXO AI):</h4>
+            <p class="text-xs text-slate-600 leading-relaxed whitespace-pre-line">${res.writingFeedback}</p>
+          </div>
+        </div>`;
+
+      document.getElementById('resultadosContainer').classList.remove('hidden');
     }
 
-    function showScreen(id) {
-      ['screen-register', 'screen-loading', 'screen-exam', 'screen-report'].forEach(s => {
-        document.getElementById(s).classList.add('hidden');
+    function resetearExamen() {
+      detenerTimer();
+      document.getElementById('quizForm').reset();
+      
+      document.getElementById('resultadosContainer').classList.add('hidden');
+      document.getElementById('quizForm').classList.remove('hidden');
+      document.getElementById('tabsContainer').classList.add('hidden');
+      document.getElementById('navButtons').classList.add('hidden');
+      
+      ['grammar', 'listening', 'reading', 'writing'].forEach(sec => {
+        const el = document.getElementById(`sec-${sec}`);
+        if (el) {
+          el.innerHTML = '';
+          el.classList.add('hidden');
+        }
       });
-      document.getElementById(id).classList.remove('hidden');
+
+      seccionActualIdx = 0;
+      document.getElementById('badgeEstado').textContent = "In Progress";
+      document.getElementById('badgeEstado').className = "px-3 py-1 bg-sky-50 text-sky-700 text-xs font-bold rounded-full border border-sky-200";
+
+      const loading = document.getElementById('loadingText');
+      loading.innerHTML = 'Loading NEXO test structure...';
+      loading.classList.remove('hidden');
+
+      document.getElementById('sec-student').classList.remove('hidden');
+
+      cargarPreguntas();
     }
   </script>
 </body>
