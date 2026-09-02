@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Placement Test — NEXO AI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans">
+
+  <!-- CONFIGURATION -->
+  <script>
+    // REPLACE THIS WITH YOUR DEPLOYED GOOGLE APPS SCRIPT WEB APP URL
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwbZdrpfB3FEuKTOxtvXSNh-DqL8qPYAPNpyd-MZrrlDTL3jbgp4QhpsyGJuclDhL_JLg/exec";
+  </script>
+
+  <div class="max-w-4xl mx-auto p-6">
+    <!-- Header -->
+    <header class="flex justify-between items-center border-b border-slate-700 pb-4 mb-6">
+      <h1 class="text-2xl font-bold text-indigo-400">Placement Test — NEXO AI</h1>
+      <div id="timer" class="text-xl font-mono text-amber-400 font-semibold hidden">00:00</div>
+    </header>
+
+    <!-- Registration Screen -->
+    <section id="screen-register" class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg">
+      <h2 class="text-xl font-semibold mb-4 text-white">Student Registration</h2>
+      <form id="form-register" onsubmit="startAssessment(event)" class="space-y-4">
+        <div>
+          <label class="block text-sm text-slate-400 mb-1">Full Name</label>
+          <input type="text" id="student-name" required class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white focus:outline-none focus:border-indigo-500">
+        </div>
+        <div>
+          <label class="block text-sm text-slate-400 mb-1">Email Address</label>
+          <input type="email" id="student-email" required class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white focus:outline-none focus:border-indigo-500">
+        </div>
+        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2 rounded transition">
+          Start Assessment
+        </button>
+      </form>
+    </section>
+
+    <!-- Loading Screen -->
+    <section id="screen-loading" class="hidden text-center py-12">
+      <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500 mb-4"></div>
+      <p id="loading-text" class="text-slate-400">Fetching assessment data...</p>
+    </section>
+
+    <!-- Exam Screen -->
+    <section id="screen-exam" class="hidden space-y-6">
+      <div class="flex justify-between items-center bg-slate-800 p-4 rounded-lg">
+        <span id="section-title" class="font-bold text-indigo-400 uppercase">Grammar Section</span>
+        <span id="question-tracker" class="text-sm text-slate-400">Question 1 of 25</span>
+      </div>
+
+      <div id="exam-container" class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+        <!-- Dynamic Content Rendered via JS -->
+      </div>
+
+      <button onclick="nextStep()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-3 rounded transition">
+        Continue
+      </button>
+    </section>
+
+    <!-- Report Screen -->
+    <section id="screen-report" class="hidden bg-slate-800 p-6 rounded-xl border border-slate-700 space-y-6">
+      <h2 class="text-2xl font-bold text-emerald-400 text-center">Assessment Completed</h2>
+      <div id="scores-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <!-- Rendered Results -->
+      </div>
+      <div class="bg-slate-900 p-4 rounded-lg border border-slate-700">
+        <h3 class="font-semibold text-indigo-400 mb-2">Writing Evaluation Feedback</h3>
+        <p id="writing-feedback-text" class="text-slate-300 text-sm leading-relaxed"></p>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    let examData = {};
+    let studentInfo = {};
+    let currentSectionIndex = 0;
+    const sections = ["Grammar", "Listening", "Reading", "Writing"];
+    let userAnswers = [];
+    let writingAnswers = { task1: "", task2: "" };
+
+    async function startAssessment(e) {
+      e.preventDefault();
+      studentInfo = {
+        name: document.getElementById('student-name').value,
+        email: document.getElementById('student-email').value
+      };
+
+      showScreen('screen-loading');
+      
+      try {
+        const response = await fetch(`${APPS_SCRIPT_URL}?action=getQuestions`);
+        const json = await response.json();
+        
+        if (json.success) {
+          examData = json.data;
+          showScreen('screen-exam');
+          renderSection();
+        } else {
+          alert('Error loading test data.');
+        }
+      } catch (err) {
+        alert('Network error connecting to backend: ' + err.message);
+      }
+    }
+
+    function renderSection() {
+      const section = sections[currentSectionIndex];
+      document.getElementById('section-title').innerText = `${section} Section`;
+      const container = document.getElementById('exam-container');
+      container.innerHTML = '';
+
+      if (section === 'Writing') {
+        container.innerHTML = `
+          <div class="space-y-4">
+            <h3 class="font-medium text-slate-200">Task 1: Short Email/Note (Minimum 50 words)</h3>
+            <textarea id="task1" oninput="updateWordCount('task1', 'wc1')" class="w-full bg-slate-900 border border-slate-700 rounded p-3 text-white h-28 focus:outline-none focus:border-indigo-500"></textarea>
+            <div id="wc1" class="text-xs text-slate-400 text-right">0 words</div>
+
+            <h3 class="font-medium text-slate-200 pt-4">Task 2: Essay Response (Minimum 120 words)</h3>
+            <textarea id="task2" oninput="updateWordCount('task2', 'wc2')" class="w-full bg-slate-900 border border-slate-700 rounded p-3 text-white h-40 focus:outline-none focus:border-indigo-500"></textarea>
+            <div id="wc2" class="text-xs text-slate-400 text-right">0 words</div>
+          </div>
+        `;
+        return;
+      }
+
+      const questions = examData[section] || [];
+      questions.forEach((q, idx) => {
+        const qEl = document.createElement('div');
+        qEl.className = 'mb-6 pb-4 border-b border-slate-700 last:border-0';
+        
+        let audioBtn = q.audioUrl ? `<button type="button" onclick="playTTS('${q.question}')" class="mb-2 bg-slate-700 hover:bg-slate-600 px-3 py-1 rounded text-xs text-indigo-300">🔊 Listen</button>` : '';
+        let passage = q.passage ? `<div class="bg-slate-900 p-3 rounded mb-3 text-sm text-slate-300 italic">${q.passage}</div>` : '';
+
+        qEl.innerHTML = `
+          ${passage}
+          ${audioBtn}
+          <p class="font-medium mb-3">${idx + 1}. ${q.question}</p>
+          <div class="space-y-2">
+            ${q.options.map(opt => `
+              <label class="flex items-center space-x-3 bg-slate-900 p-2 rounded cursor-pointer border border-transparent hover:border-slate-600">
+                <input type="radio" name="q_${q.id}" value="${opt}" class="form-radio text-indigo-600" onchange="recordAnswer(${q.id}, '${section}', '${opt}', '${q.correct}')">
+                <span class="text-sm text-slate-300">${opt}</span>
+              </label>
+            `).join('')}
+          </div>
+        `;
+        container.appendChild(qEl);
+      });
+    }
+
+    function recordAnswer(id, section, selected, correct) {
+      userAnswers = userAnswers.filter(a => a.id !== id);
+      userAnswers.push({ id, section, selected, correct });
+    }
+
+    function updateWordCount(inputId, targetId) {
+      const text = document.getElementById(inputId).value.trim();
+      const count = text ? text.split(/\s+/).length : 0;
+      document.getElementById(targetId).innerText = `${count} words`;
+    }
+
+    function playTTS(text) {
+      const msg = new SpeechSynthesisUtterance(text);
+      msg.lang = 'en-US';
+      window.speechSynthesis.speak(msg);
+    }
+
+    async function nextStep() {
+      if (sections[currentSectionIndex] === 'Writing') {
+        writingAnswers.task1 = document.getElementById('task1').value;
+        writingAnswers.task2 = document.getElementById('task2').value;
+        await submitExam();
+        return;
+      }
+
+      currentSectionIndex++;
+      if (currentSectionIndex < sections.length) {
+        renderSection();
+        window.scrollTo(0, 0);
+      }
+    }
+
+    async function submitExam() {
+      showScreen('screen-loading');
+      document.getElementById('loading-text').innerText = 'Evaluating responses with AI...';
+
+      const payload = {
+        student: studentInfo,
+        answers: userAnswers,
+        writingTasks: writingAnswers
+      };
+
+      try {
+        const response = await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        });
+        
+        const json = await response.json();
+        if (json.success) {
+          renderReport(json.data);
+        } else {
+          alert('Submission error: ' + json.error);
+        }
+      } catch (err) {
+        alert('Network error submitting test: ' + err.message);
+      }
+    }
+
+    function renderReport(data) {
+      showScreen('screen-report');
+      const grid = document.getElementById('scores-grid');
+      grid.innerHTML = '';
+
+      ['Grammar', 'Listening', 'Reading', 'Writing'].forEach(sec => {
+        grid.innerHTML += `
+          <div class="bg-slate-900 p-4 rounded-lg text-center border border-slate-700">
+            <div class="text-xs text-slate-400 uppercase font-semibold mb-1">${sec}</div>
+            <div class="text-2xl font-bold text-indigo-400">${data[sec]} / 6.0</div>
+            <div class="inline-block mt-2 bg-indigo-900/50 text-indigo-300 text-xs px-2 py-1 rounded font-mono">${data.cefr[sec]}</div>
+          </div>
+        `;
+      });
+
+      document.getElementById('writing-feedback-text').innerText = data.writingFeedback || 'No qualitative feedback available.';
+    }
+
+    function showScreen(id) {
+      ['screen-register', 'screen-loading', 'screen-exam', 'screen-report'].forEach(s => {
+        document.getElementById(s).classList.add('hidden');
+      });
+      document.getElementById(id).classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
