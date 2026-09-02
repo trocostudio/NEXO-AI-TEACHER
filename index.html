@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+--nexo-dark: #0f172a; 
+--nexo-navy: #1e293b; 
+--nexo-cyan: #38bdf8; 
+--nexo-cyan-hover: #0284c7; 
+--bg-gray: #f8fafc; 
+--nexo-highlight: #0f172a;
+}
+
+body {
+font-family: 'Poppins', sans-serif;
+background-color: var(--bg-gray);
+}
+
+.site-header {
+  background: linear-gradient(180deg, var(--nexo-dark) 0%, var(--nexo-navy) 100%);
+  padding: 10px 4%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+  flex-wrap: wrap; 
+  gap: 10px;
+}
+
+.logo-container {
+display: flex;
+align-items: center;
+text-decoration: none;
+flex-shrink: 0;
+}
+
+.logo-img {
+height: 65px;
+width: auto;
+object-fit: contain;
+display: block;
+}
+
+.header-nav-levels {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  margin: 0 15px;
+  order: 3;
+  min-width: 100%;
+}
+
+@media (min-width: 640px) {
+  .header-nav-levels {
+    order: unset;
+    min-width: auto;
+  }
+}
+
+.btn-header-student {
+border: 1.5px solid var(--nexo-cyan);
+color: var(--nexo-cyan);
+padding: 6px 16px;
+border-radius: 8px;
+font-size: 12px;
+font-weight: 600;
+letter-spacing: 0.5px;
+white-space: nowrap;
+text-transform: uppercase;
+transition: all 0.3s ease;
+flex-shrink: 0;
+}
+
+.btn-header-student:hover {
+background-color: var(--nexo-cyan);
+color: var(--nexo-dark);
+}
+
+.btn-header-whatsapp {
+background-color: #25D366;
+color: #ffffff;
+padding: 6px 14px;
+border-radius: 8px;
+font-size: 12px;
+font-weight: 700;
+letter-spacing: 0.5px;
+white-space: nowrap;
+text-transform: uppercase;
+transition: all 0.3s ease;
+flex-shrink: 0;
+display: inline-flex;
+align-items: center;
+gap: 6px;
+box-shadow: 0 2px 8px rgba(37, 211, 102, 0.3);
+}
+
+.btn-header-whatsapp:hover {
+background-color: #1ea952;
+transform: translateY(-1px);
+box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+}
+
+.dinamic-focus:focus {
+border-color: var(--nexo-highlight) !important;
+box-shadow: 0 0 0 2px var(--nexo-highlight) !important;
+}
+.dinamic-banner {
+border-left-color: var(--nexo-highlight) !important;
+}
+.dinamic-accent {
+color: var(--nexo-highlight) !important;
+}
+.dinamic-radio:checked {
+accent-color: var(--nexo-highlight) !important;
+}
+.dinamic-button {
+background-color: var(--nexo-highlight) !important;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+</style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col items-center justify-between">
+
+<header class="site-header flex items-center justify-between px-3 py-2 bg-slate-950 border-b border-sky-400/20 w-full max-w-full overflow-hidden">
+  
+  <a href="javascript:void(0)" onclick="irAlHome(); return false;" class="logo-container flex-shrink-0">
+    <img src="https://lh3.googleusercontent.com/d/1a4L7BjmCFlmNFn-qV1oWxuNHM_C8Q6Xg" alt="Logo Institucional" class="logo-img h-7 sm:h-9 w-auto object-contain">
+  </a>
+
+  <div class="header-nav-levels min-w-0 mx-2 flex-1 flex justify-center">
+    <div id="nivelContainerDesk" class="flex items-center space-x-1 sm:space-x-2 bg-slate-900/40 p-1 sm:p-1.5 rounded-xl border border-sky-400/20 max-w-full overflow-x-auto no-scrollbar whitespace-nowrap">
+      <button onclick="cambiarNivel('INTRO')" data-level="INTRO" class="px-2 sm:px-3 py-1 sm:py-1.5 text-2xs sm:text-xs font-bold rounded-lg transition cursor-pointer text-slate-300 hover:text-white hover:bg-sky-500/20 flex-shrink-0">INTRO</button>
+      <button onclick="cambiarNivel('A1')" data-level="A1" class="px-2 sm:px-3 py-1 sm:py-1.5 text-2xs sm:text-xs font-bold rounded-lg transition cursor-pointer text-slate-300 hover:text-white hover:bg-sky-500/20 flex-shrink-0">A1</button>
+      <button onclick="cambiarNivel('A2')" data-level="A2" class="px-2 sm:px-3 py-1 sm:py-1.5 text-2xs sm:text-xs font-bold rounded-lg transition cursor-pointer text-slate-300 hover:text-white hover:bg-sky-500/20 flex-shrink-0">A2</button>
+      <button onclick="cambiarNivel('B1')" data-level="B1" class="px-2 sm:px-3 py-1 sm:py-1.5 text-2xs sm:text-xs font-bold rounded-lg transition cursor-pointer text-slate-300 hover:text-white hover:bg-sky-500/20 flex-shrink-0">B1</button>
+      <button onclick="cambiarNivel('B2')" data-level="B2" class="px-2 sm:px-3 py-1 sm:py-1.5 text-2xs sm:text-xs font-bold rounded-lg transition cursor-pointer text-slate-300 hover:text-white hover:bg-sky-500/20 flex-shrink-0">B2</button>
+      <button onclick="cambiarNivel('C1')" data-level="C1" class="px-2 sm:px-3 py-1 sm:py-1.5 text-2xs sm:text-xs font-bold rounded-lg transition cursor-pointer text-slate-300 hover:text-white hover:bg-sky-500/20 flex-shrink-0">C1</button>
+    </div>
+  </div>
+
+  <div class="header-actions flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
+    <span class="btn-header-student px-2.5 py-1 text-xs font-semibold text-sky-400 border border-sky-400/40 rounded-lg hover:bg-sky-500/20 cursor-pointer transition whitespace-nowrap" onclick="irAlHome()">Inicio</span>
+    
+    <a href="javascript:void(0)" onclick="irAlHome(); return false;" class="logo-container flex-shrink-0">
+      <img src="https://lh3.googleusercontent.com/d/1sVfKrSCV_fRlJEqF_Oy8pyNOhLKrfVoT" alt="Logo NEXO AI Teacher" class="logo-img h-7 sm:h-9 w-auto object-contain">
+    </a>
+  </div>
+
+</header>
+
+<main class="w-full max-w-6xl mx-auto px-4 my-6 flex-grow flex flex-col justify-center items-center">
+
+<div id="landingPage" class="w-full max-w-5xl bg-white rounded-2xl shadow-xl p-8 text-center my-auto space-y-6 border border-slate-100">
+<div>
+<div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-2">
+  <img src="https://drive.google.com/thumbnail?id=1YZjb1miAjuFCTRaa8fZTGDSqYldzO987&sz=w800" class="w-32 h-32 sm:w-40 sm:h-40 object-contain animate-bounce drop-shadow-md" alt="NEXO Bot Happy">
+  <h1 class="text-3xl md:text-4xl font-bold text-slate-900">Welcome to NEXO Learning Platform!</h1>
+</div>
+<p class="text-sm md:text-base text-slate-500 max-w-xl mx-auto mb-4">Empower your English journey. Please follow the steps below to start.</p>
+</div>
+
+<div id="landingStep1" class="space-y-4 max-w-4xl mx-auto pt-4">
+<h2 class="text-lg font-semibold text-slate-700 mb-4">Step 1: What would you like to do today?</h2>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+  
+  <div onclick="intentarAccesoModo('clases')" class="border-2 border-slate-200 hover:border-sky-500 bg-slate-50 hover:bg-sky-50/30 p-6 rounded-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-1 shadow-sm group text-center flex flex-col justify-between">
+    <div>
+      <span class="w-14 h-14 rounded-full bg-sky-500 text-white flex items-center justify-center font-bold text-2xl mx-auto mb-3 shadow-md group-hover:scale-110 transition">📚</span>
+      <h3 class="font-bold text-slate-900 text-base mb-1">See Lesson Materials</h3>
+      <p class="text-xs text-slate-500 mb-3">Review presentations, dynamic grammar notes, charts, and video lessons.</p>
+    </div>
+    <span class="inline-block mt-2 text-sm font-extrabold text-amber-600 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full uppercase tracking-wider shadow-xs animate-pulse">👑 PREMIUM</span>
+  </div>
+
+  <div onclick="intentarAccesoModo('ejercicios')" class="border-2 border-slate-200 hover:border-emerald-500 bg-slate-50 hover:bg-emerald-50/30 p-6 rounded-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-1 shadow-sm group text-center flex flex-col justify-between">
+    <div>
+      <span class="w-14 h-14 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-2xl mx-auto mb-3 shadow-md group-hover:scale-110 transition">📝</span>
+      <h3 class="font-bold text-slate-900 text-base mb-1">Practice Grammar</h3>
+      <p class="text-xs text-slate-500 mb-3">Take self-correcting grammar quizzes customized by topic and units.</p>
+    </div>
+    <span class="inline-block mt-2 text-xs font-semibold text-emerald-600 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full uppercase tracking-wider">FREE ACCESS</span>
+  </div>
+
+  <div onclick="intentarAccesoExamen()" class="border-2 border-slate-200 hover:border-purple-500 bg-slate-50 hover:bg-purple-50/30 p-6 rounded-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-1 shadow-sm group text-center flex flex-col justify-between">
+    <div>
+      <span class="w-14 h-14 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold text-2xl mx-auto mb-3 shadow-md group-hover:scale-110 transition">🎯</span>
+      <h3 class="font-bold text-slate-900 text-base mb-1">Test of English</h3>
+      <p class="text-xs text-slate-500 mb-3">Evaluate your overall English proficiency level with an interactive test.</p>
+    </div>
+    <span class="inline-block mt-2 text-sm font-extrabold text-amber-600 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full uppercase tracking-wider shadow-xs animate-pulse">👑 PREMIUM</span>
+  </div>
+
+</div>
+</div>
+
+<div id="landingStep2" class="space-y-6 pt-4 hidden">
+<div class="flex items-center justify-center space-x-3 mb-2">
+<button onclick="regresarAlPaso1()" class="text-xs font-semibold text-sky-600 hover:underline bg-sky-50 px-3 py-1.5 rounded-lg border border-sky-100 cursor-pointer">← Change Mode</button>
+<span id="txtModoSeleccionado" class="text-sm font-bold uppercase tracking-wider text-slate-700 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">Mode: </span>
+</div>
+<h2 class="text-lg font-semibold text-slate-700">Step 2: Choose your English level</h2>
+
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
+<div onclick="cambiarNivel('INTRO')" class="border-2 border-slate-100 hover:border-purple-500 bg-slate-50 hover:bg-purple-50/40 p-5 rounded-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-1 shadow-sm group">
+<span class="w-12 h-12 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold text-xs mx-auto mb-3 shadow-md group-hover:scale-110 transition">INTRO</span>
+<h3 class="font-bold text-slate-800 text-sm">Starter</h3>
+</div>
+<div onclick="cambiarNivel('A1')" class="border-2 border-slate-100 hover:border-teal-400 bg-slate-50 hover:bg-teal-50/40 p-5 rounded-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-1 shadow-sm group">
+<span class="w-12 h-12 rounded-full bg-teal-500 text-white flex items-center justify-center font-bold text-lg mx-auto mb-3 shadow-md group-hover:scale-110 transition">A1</span>
+<h3 class="font-bold text-slate-800 text-sm">Beginner</h3>
+</div>
+<div onclick="cambiarNivel('A2')" class="border-2 border-slate-100 hover:border-sky-400 bg-slate-50 hover:bg-sky-50/40 p-5 rounded-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-1 shadow-sm group">
+<span class="w-12 h-12 rounded-full bg-sky-400 text-white flex items-center justify-center font-bold text-lg mx-auto mb-3 shadow-md group-hover:scale-110 transition">A2</span>
+<h3 class="font-bold text-slate-800 text-sm">Elementary</h3>
+</div>
+<div onclick="cambiarNivel('B1')" class="border-2 border-slate-100 hover:border-emerald-500 bg-slate-50 hover:bg-emerald-50/40 p-5 rounded-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-1 shadow-sm group">
+<span class="w-12 h-12 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-lg mx-auto mb-3 shadow-md group-hover:scale-110 transition">B1</span>
+<h3 class="font-bold text-slate-800 text-sm">Intermediate</h3>
+</div>
+<div onclick="cambiarNivel('B2')" class="border-2 border-slate-100 hover:border-blue-600 bg-slate-50 hover:bg-blue-50/40 p-5 rounded-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-1 shadow-sm group">
+<span class="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-lg mx-auto mb-3 shadow-md group-hover:scale-110 transition">B2</span>
+<h3 class="font-bold text-slate-800 text-sm">Upper Int.</h3>
+</div>
+<div onclick="cambiarNivel('C1')" class="border-2 border-slate-100 hover:border-indigo-600 bg-slate-50 hover:bg-indigo-50/40 p-5 rounded-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-1 shadow-sm group">
+<span class="w-12 h-12 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-lg mx-auto mb-3 shadow-md group-hover:scale-110 transition">C1</span>
+<h3 class="font-bold text-slate-800 text-sm">Advanced</h3>
+</div>
+</div>
+</div>
+</div>
+
+<div id="exercisesInterface" class="w-full flex flex-col md:flex-row gap-6 hidden">
+<div class="w-full md:w-80 bg-white rounded-2xl shadow-xl p-6 h-fit md:sticky md:top-24 border border-slate-100">
+<h2 class="text-xl font-bold dinamic-accent text-center mb-4">🔍 Quiz Navigation</h2>
+<div class="mb-4">
+<label for="unidadSelect" class="block text-sm font-medium text-slate-700 mb-2">Select Unit:</label>
+<select id="unidadSelect" onchange="actualizarSelectorClases()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none dinamic-focus">
+<option value="">Loading book units...</option>
+</select>
+</div>
+<div class="mb-2">
+<label for="claseSelect" class="block text-sm font-medium text-slate-700 mb-2">Select your Class:</label>
+<select id="claseSelect" onchange="cargarEjercicios()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none dinamic-focus" disabled>
+<option value="">-- Choose a Unit First --</option>
+</select>
+</div>
+</div>
+
+<div class="flex-1 bg-white rounded-2xl shadow-xl p-6 flex flex-col justify-between min-h-[300px] border border-slate-100">
+<div>
+<h1 class="text-2xl font-bold dinamic-accent text-center md:text-left mb-6 border-b border-slate-100 pb-3">📝 <span class="lblNivel">A1</span> Grammar Exercises</h1>
+<div id="ejerciciosContainer" class="space-y-6">
+<p class="text-center text-slate-400 py-12">Please choose a unit and a class from the left panel to begin.</p>
+</div>
+</div>
+<div class="mt-6">
+<button id="btnRevisar" onclick="revisarRespuestas()" class="w-full text-white font-semibold p-3 rounded-xl transition hidden shadow-md cursor-pointer dinamic-button hover:opacity-90">
+Check Answers
+</button>
+</div>
+</div>
+</div>
+
+<div id="classesInterface" class="w-full flex flex-col md:flex-row gap-6 hidden">
+<div class="w-full md:w-80 bg-white rounded-2xl shadow-xl p-6 h-fit md:sticky md:top-24 border border-slate-100">
+<h2 class="text-xl font-bold dinamic-accent text-center mb-4">📚 Class Navigation</h2>
+<div class="mb-4">
+<label for="unidadSelectClases" class="block text-sm font-medium text-slate-700 mb-2">Select Unit:</label>
+<select id="unidadSelectClases" onchange="actualizarSelectorClasesParaContenido()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none dinamic-focus">
+<option value="">Loading units...</option>
+</select>
+</div>
+<div class="mb-2">
+<label for="claseSelectClases" class="block text-sm font-medium text-slate-700 mb-2">Select Lesson Material:</label>
+<select id="claseSelectClases" onchange="cargarContenidoDeClase()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none dinamic-focus" disabled>
+<option value="">-- Choose a Unit First --</option>
+</select>
+</div>
+</div>
+
+<div class="flex-1 bg-white rounded-2xl shadow-xl p-6 min-h-[300px] border border-slate-100">
+<h1 class="text-2xl font-bold dinamic-accent text-center md:text-left mb-6 border-b border-slate-100 pb-3">📖 <span class="lblNivel">A1</span> Lesson Contents</h1>
+<div id="contenidoClaseContainer" class="space-y-6">
+<p class="text-center text-slate-400 py-12">Please choose a unit and a class to view its educational presentation or notes.</p>
+</div>
+</div>
+</div>
+
+</main>
+
+<div id="authModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[2000] flex items-center justify-center p-4 hidden">
+  <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 border border-slate-100 text-center space-y-4 relative">
+    
+    <button onclick="cerrarModalAuth()" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-800 transition font-bold text-base cursor-pointer" title="Close / Return">
+      ✕
+    </button>
+
+    <img src="https://drive.google.com/thumbnail?id=1CkhbIWRpoVLHt7t97xY4CBcHxj31L-9_&sz=w800" class="w-24 h-24 object-contain mx-auto mb-2 drop-shadow-md pt-2" alt="NEXO Bot Lock/Error">
+    
+    <h3 class="text-xl font-bold text-slate-900">👑 Premium Access Required</h3>
+    
+    <p id="authModalMessage" class="text-xs text-slate-500 leading-relaxed">
+      This content is part of our premium service. Please enter your registered username or make sure you are inside classroom premises.
+    </p>
+
+    <div class="pt-1">
+      <a href="https://wa.me/573214173853?text=Hola,%20quiero%20comprar%20el%20acceso%20PREMIUM%20de%20NEXO%20por%2030$" target="_blank" class="w-full inline-flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold p-2.5 rounded-xl transition text-xs shadow-sm">
+        <span>💬 Get Premium via WhatsApp</span>
+      </a>
+    </div>
+    
+    <div class="space-y-3 pt-2">
+      <input type="text" id="usernameInput" placeholder="Enter your username..."
+        class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-200">
+      
+      <div id="authErrorMsg" class="text-xs text-rose-500 hidden font-medium"></div>
+      
+      <button onclick="autenticarUsuario()" id="btnAuthSubmit" class="w-full bg-slate-900 text-white font-bold p-3 rounded-xl hover:bg-slate-800 transition shadow-md cursor-pointer">
+        Verify Access
+      </button>
+    </div>
+  </div>
+</div>
+
+<footer class="w-full bg-slate-900 text-slate-400 py-6 px-4 mt-auto border-t-4 border-sky-400 text-center text-xs space-y-2">
+<p class="font-medium text-white text-sm">NEXO AI Teacher — Powered Learning Platform</p>
+<p>© 2026 Todos los derechos reservados. Desarrollado por German Andres Peña Troconis</p>
+</footer>
+
+<script>
+// REPLACE THIS WITH YOUR GOOGLE APPS SCRIPT WEB APP DEPLOYMENT URL
+const API_URL = "https://script.google.com/macros/s/AKfycbxmJ2u1YZmCcCXF-8ITIB-7G6r4olrUSlHzr-PCnS_v1QrOE13p0ZYU45ZMuemClpoP/exec";
+
+const MASCOTA = {
+  error: 'https://drive.google.com/thumbnail?id=1CkhbIWRpoVLHt7t97xY4CBcHxj31L-9_&sz=w800',
+  love: 'https://drive.google.com/thumbnail?id=1Loxm8_ZdrchmnZWMMfT6PJRmzB83muVb&sz=w800',
+  surprise: 'https://drive.google.com/thumbnail?id=1cxBPF747ZjmZAf2dbB5re5rpw9iCdYRv&sz=w800',
+  wink: 'https://drive.google.com/thumbnail?id=1zATdC2JEcBxVZ0KnTax_yUXNqFZENomB&sz=w800',
+  happy: 'https://drive.google.com/thumbnail?id=1YZjb1miAjuFCTRaa8fZTGDSqYldzO987&sz=w800'
+};
+
+const URL_EXAMEN_PREMIUM = "https://script.google.com/macros/s/AKfycbwYXNyI1DMon1qYwbLxB3dDOMpcH1lQ6SMCoUt9J4BBCP0WOL0O5E-vBk7CrxoS9lrb3w/exec";
+
+let ejerciciosActuales = [];
+let datosGlobalesMapeados = {};
+let nivelActual = null;
+let modoActual = "ejercicios";
+let usuarioAutenticado = sessionStorage.getItem('nexo_verified_user') || null;
+let userLat = 0;
+let userLon = 0;
+let accionPendientePostAuth = null;
+
+const coloresNivel = {
+'INTRO': '#9333ea',
+'A1': '#0d9488', 
+'A2': '#0284c7', 
+'B1': '#10b981', 
+'B2': '#2563eb', 
+'C1': '#4f46e5' 
+};
+
+window.onload = function() {
+  irAlHome();
+};
+
+function irAlHome() {
+nivelActual = null;
+document.documentElement.style.setProperty('--nexo-highlight', '#0f172a');
+document.getElementById('landingPage').classList.remove('hidden');
+document.getElementById('exercisesInterface').classList.add('hidden');
+document.getElementById('classesInterface').classList.add('hidden');
+regresarAlPaso1();
+removerBotonesActivos();
+}
+
+function removerBotonesActivos() {
+document.getElementById('nivelContainerDesk').classList.add('hidden');
+document.querySelectorAll('#nivelContainerDesk button').forEach(btn => {
+btn.className = "px-2 sm:px-3 py-1 sm:py-1.5 text-2xs sm:text-xs font-bold rounded-lg transition cursor-pointer text-slate-300 hover:text-white hover:bg-sky-500/20";
+});
+}
+
+function intentarAccesoModo(modo) {
+  if (modo === 'clases' && !usuarioAutenticado) {
+    accionPendientePostAuth = function() { seleccionarModoLanding('clases'); };
+    mostrarModalAuth("Lesson Materials and Classes are premium features. Please verify your access or enter your username to continue.");
+    return;
+  }
+  seleccionarModoLanding(modo);
+}
+
+function intentarAccesoExamen() {
+  if (!usuarioAutenticado) {
+    accionPendientePostAuth = function() { window.open(URL_EXAMEN_PREMIUM, '_blank'); };
+    mostrarModalAuth("The Test of English is an exclusive service. Please verify your registered username to unlock the examination.");
+    return;
+  }
+  window.open(URL_EXAMEN_PREMIUM, '_blank');
+}
+
+function seleccionarModoLanding(modo) {
+modoActual = modo;
+const txtModo = document.getElementById('txtModoSeleccionado');
+
+if (modo === "clases") {
+txtModo.textContent = "Selected: See Classes 📚";
+txtModo.className = "text-sm font-bold uppercase tracking-wider text-sky-700 bg-sky-50 px-3 py-1.5 rounded-lg border border-sky-200";
+} else {
+txtModo.textContent = "Selected: Practice Grammar 📝";
+txtModo.className = "text-sm font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200";
+}
+
+document.getElementById('landingStep1').classList.add('hidden');
+document.getElementById('landingStep2').classList.remove('hidden');
+}
+
+function regresarAlPaso1() {
+document.getElementById('landingStep2').classList.add('hidden');
+document.getElementById('landingStep1').classList.remove('hidden');
+document.getElementById('nivelContainerDesk').classList.add('hidden');
+}
+
+function cambiarNivel(nuevoNivel) {
+nivelActual = nuevoNivel;
+
+document.querySelectorAll('.lblNivel').forEach(el => el.textContent = nuevoNivel);
+document.getElementById('landingPage').classList.add('hidden');
+
+if (modoActual === "ejercicios") {
+document.getElementById('exercisesInterface').classList.remove('hidden');
+document.getElementById('classesInterface').classList.add('hidden');
+} else {
+document.getElementById('classesInterface').classList.remove('hidden');
+document.getElementById('exercisesInterface').classList.add('hidden');
+}
+
+document.documentElement.style.setProperty('--nexo-highlight', coloresNivel[nuevoNivel]);
+
+const barraHeader = document.getElementById('nivelContainerDesk');
+barraHeader.classList.remove('hidden');
+
+document.querySelectorAll('#nivelContainerDesk button').forEach(btn => {
+btn.className = (btn.getAttribute('data-level') === nuevoNivel)
+? "px-2 sm:px-3 py-1 sm:py-1.5 text-2xs sm:text-xs font-bold rounded-lg bg-sky-400 text-slate-950 shadow-sm cursor-default"
+: "px-2 sm:px-3 py-1 sm:py-1.5 text-2xs sm:text-xs font-bold rounded-lg transition cursor-pointer text-slate-300 hover:text-white hover:bg-sky-500/20";
+});
+
+const uSel = document.getElementById('unidadSelect');
+const cSel = document.getElementById('claseSelect');
+uSel.innerHTML = '<option value="">Loading book units...</option>';
+cSel.innerHTML = '<option value="">-- Choose a Unit First --</option>'; cSel.disabled = true;
+document.getElementById('ejerciciosContainer').innerHTML = '<p class="text-center text-slate-400 py-12">Please choose a unit and a class from the left panel to begin.</p>';
+document.getElementById('btnRevisar').classList.add('hidden');
+
+const uSelC = document.getElementById('unidadSelectClases');
+const cSelC = document.getElementById('claseSelectClases');
+uSelC.innerHTML = '<option value="">Loading book units...</option>';
+cSelC.innerHTML = '<option value="">-- Choose a Unit First --</option>'; cSelC.disabled = true;
+document.getElementById('contenidoClaseContainer').innerHTML = '<p class="text-center text-slate-400 py-12">Please choose a unit and a class to view its educational presentation or notes.</p>';
+
+fetch(`${API_URL}?action=getNuevasClasesPorNivel&nivel=${encodeURIComponent(nivelActual)}`)
+  .then(res => res.json())
+  .then(mapaUnidadesEjercicios => {
+    uSel.innerHTML = '<option value="">-- Choose a Unit --</option>';
+    if (mapaUnidadesEjercicios.Error) { uSel.innerHTML = '<option value="">Error loading</option>'; return; }
+
+    window.datosEjerciciosMapeados = mapaUnidadesEjercicios;
+
+    Object.keys(mapaUnidadesEjercicios).sort((a,b) => (parseInt(a.replace(/\D/g, ""), 10) || 0) - (parseInt(b.replace(/\D/g, ""), 10) || 0)).forEach(unidad => {
+      let opt = document.createElement('option'); opt.value = unidad; opt.textContent = unidad;
+      uSel.appendChild(opt);
+    });
+  });
+
+fetch(`${API_URL}?action=getEstructuraClasesPorNivel&nivel=${encodeURIComponent(nivelActual)}`)
+  .then(res => res.json())
+  .then(mapaUnidadesClases => {
+    uSelC.innerHTML = '<option value="">-- Choose a Unit --</option>';
+    if (mapaUnidadesClases.Error) { uSelC.innerHTML = '<option value="">Error loading</option>'; return; }
+
+    window.datosClasesMapeados = mapaUnidadesClases;
+
+    Object.keys(mapaUnidadesClases).sort((a,b) => (parseInt(a.replace(/\D/g, ""), 10) || 0) - (parseInt(b.replace(/\D/g, ""), 10) || 0)).forEach(unidad => {
+      let opt = document.createElement('option'); opt.value = unidad; opt.textContent = unidad;
+      uSelC.appendChild(opt);
+    });
+  });
+}
+
+function autenticarUsuario() {
+const inputVal = document.getElementById('usernameInput').value.trim();
+const errDiv = document.getElementById('authErrorMsg');
+const btnAuth = document.getElementById('btnAuthSubmit');
+if (!inputVal) { errDiv.textContent = "Please enter your username."; errDiv.classList.remove('hidden'); return; }
+
+errDiv.classList.add('hidden');
+btnAuth.disabled = true; btnAuth.textContent = "Verifying...";
+
+fetch(`${API_URL}?action=verificarAcceso&username=${encodeURIComponent(inputVal)}&lat=${userLat}&lon=${userLon}`)
+  .then(res => res.json())
+  .then(res => {
+    btnAuth.disabled = false; btnAuth.textContent = "Verify Access";
+    if (res.permitido) {
+      usuarioAutenticado = inputVal;
+      sessionStorage.setItem('nexo_verified_user', usuarioAutenticado);
+      ocultarModalAuth();
+
+      if (accionPendientePostAuth) {
+        var fn = accionPendientePostAuth;
+        accionPendientePostAuth = null;
+        fn();
+      } else if (nivelActual) {
+        cambiarNivel(nivelActual);
+      }
+    } else {
+      errDiv.textContent = res.mensaje; errDiv.classList.remove('hidden');
+    }
+  })
+  .catch(err => {
+    btnAuth.disabled = false; btnAuth.textContent = "Verify Access";
+    errDiv.textContent = "Error: " + err.message; errDiv.classList.remove('hidden');
+  });
+}
+
+function mostrarModalAuth(mensaje) {
+const modal = document.getElementById('authModal');
+const msgPara = document.getElementById('authModalMessage');
+if (mensaje) msgPara.textContent = mensaje;
+modal.classList.remove('hidden');
+}
+
+function cerrarModalAuth() {
+accionPendientePostAuth = null;
+ocultarModalAuth();
+}
+
+function ocultarModalAuth() {
+document.getElementById('authModal').classList.add('hidden');
+document.getElementById('authErrorMsg').classList.add('hidden');
+document.getElementById('usernameInput').value = '';
+}
+
+function actualizarSelectorClases() {
+const unidadSeleccionada = document.getElementById('unidadSelect').value;
+const claseSelect = document.getElementById('claseSelect');
+document.getElementById('ejerciciosContainer').innerHTML = '<p class="text-center text-slate-400 py-12">Please choose a unit and a class from the left panel to begin.</p>';
+document.getElementById('btnRevisar').classList.add('hidden');
+
+if (!unidadSeleccionada) { claseSelect.innerHTML = '<option value="">-- Choose a Unit First --</option>'; claseSelect.disabled = true; return; }
+claseSelect.innerHTML = '<option value="">-- Choose a Class --</option>'; claseSelect.disabled = false;
+
+(window.datosEjerciciosMapeados[unidadSeleccionada] || []).forEach(clase => {
+let option = document.createElement('option'); option.value = clase; option.textContent = clase; claseSelect.appendChild(option);
+});
+}
+
+function actualizarSelectorClasesParaContenido() {
+const unidadSeleccionada = document.getElementById('unidadSelectClases').value;
+const claseSelect = document.getElementById('claseSelectClases');
+document.getElementById('contenidoClaseContainer').innerHTML = '<p class="text-center text-slate-400 py-12">Please choose a unit and a class to view its educational presentation or notes.</p>';
+
+if (!unidadSeleccionada) { claseSelect.innerHTML = '<option value="">-- Choose a Unit First --</option>'; claseSelect.disabled = true; return; }
+claseSelect.innerHTML = '<option value="">-- Choose a Material --</option>'; claseSelect.disabled = false;
+
+(window.datosClasesMapeados[unidadSeleccionada] || []).forEach(clase => {
+let option = document.createElement('option'); option.value = clase; option.textContent = clase; claseSelect.appendChild(option);
+});
+}
+
+function cargarEjercicios() {
+const clase = document.getElementById('claseSelect').value;
+const container = document.getElementById('ejerciciosContainer');
+const btn = document.getElementById('btnRevisar');
+if (!clase) { container.innerHTML = '<p class="text-center text-slate-400 py-12">Please choose a unit and a class from the left panel to begin.</p>'; btn.classList.add('hidden'); return; }
+
+container.innerHTML = '<p class="text-center text-slate-500 py-12">Loading questions...</p>';
+btn.classList.add('hidden');
+
+fetch(`${API_URL}?action=getEjerciciosPorClase&nivel=${encodeURIComponent(nivelActual)}&clase=${encodeURIComponent(clase)}`)
+  .then(res => res.json())
+  .then(ejercicios => {
+    ejerciciosActuales = ejercicios; container.innerHTML = '';
+    if(!ejercicios || ejercicios.length === 0) { container.innerHTML = '<p class="text-center text-rose-500 py-12">No exercises found for this class.</p>'; return; }
+
+    let ultimaInstruccion = null;
+    ejercicios.forEach((ej) => {
+    let SocietiesInstruccion = (ej.instruccion && ej.instruccion.toString().trim() !== "") ? ej.instruccion.toString().trim() : null;
+    if (SocietiesInstruccion && SocietiesInstruccion !== ultimaInstruccion) {
+    let bannerInstruccion = document.createElement('div');
+    bannerInstruccion.className = "bg-slate-900 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow-sm mt-4 mb-2 border-l-4 dinamic-banner flex items-center space-x-2";
+    bannerInstruccion.innerHTML = `<span>💡</span> <span>${SocietiesInstruccion}</span>`;
+    container.appendChild(bannerInstruccion); ultimaInstruccion = SocietiesInstruccion;
+    } else if (!SocietiesInstruccion) { ultimaInstruccion = null; }
+
+    let card = document.createElement('div'); card.className = "bg-slate-50 border border-slate-200 p-4 rounded-xl shadow-sm transition-colors duration-300"; card.id = `card-${ej.id}`;
+    let textoMostrar = ej.enunciado || "";
+    let opciones = [];
+    if ((ej.tipo === "Opción múltiple" || ej.tipo === "Opcion multiple") && ej.opcionesRaw) {
+    opciones = ej.opcionesRaw.split(',').map(o => o.trim()).filter(o => o.length > 0); opciones.sort(() => Math.random() - 0.5);
+    }
+
+    let htmlPregunta = `<p class="font-medium text-slate-900 mb-2"><span class="dinamic-accent font-bold">${ej.id}</span> ${textoMostrar}</p>`;
+    if ((ej.tipo === "Opción múltiple" || ej.tipo === "Opcion multiple") && opciones.length > 0) {
+    opciones.forEach(opc => {
+    htmlPregunta += `<label class="flex items-center space-x-3 bg-white p-2.5 my-1.5 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-100 transition"><input type="radio" name="input-${ej.id}" value="${opc}" class="dinamic-radio h-4 w-4"><span class="text-sm text-slate-700">${opc}</span></label>`;
+    });
+    } else if (ej.tipo === "Redacción" || ej.tipo === "Redaccion" || ej.tipo === "Redacción de párrafo") {
+    htmlPregunta += `<textarea id="input-${ej.id}" rows="4" placeholder="Write your paragraph here..." class="w-full p-3 bg-white border border-slate-300 rounded-lg text-sm focus:outline-none dinamic-focus resize-y"></textarea>`;
+    } else {
+    htmlPregunta += `<input type="text" id="input-${ej.id}" placeholder="Type your answer here..." class="w-full p-2.5 bg-white border border-slate-300 rounded-lg text-sm focus:outline-none dinamic-focus">`;
+    }
+    htmlPregunta += `<div id="feedback-${ej.id}" class="mt-3 p-3 text-sm rounded-lg border hidden"></div>`;
+    card.innerHTML = htmlPregunta; container.appendChild(card);
+    });
+    btn.classList.remove('hidden');
+  });
+}
+
+function cargarContenidoDeClase() {
+const clase = document.getElementById('claseSelectClases').value;
+const container = document.getElementById('contenidoClaseContainer');
+if (!clase) { 
+container.innerHTML = '<p class="text-center text-slate-400 py-12">Please choose a unit and a class to view its educational presentation or notes.</p>'; 
+return; 
+}
+
+container.innerHTML = '<p class="text-center text-slate-500 py-12">Loading class materials...</p>';
+
+fetch(`${API_URL}?action=obtenerUrlClase&nivel=${encodeURIComponent(nivelActual)}&clase=${encodeURIComponent(clase)}`)
+  .then(res => res.json())
+  .then(info => {
+    container.innerHTML = '';
+
+    if (!info || info.error) {
+    container.innerHTML = `<p class="text-center text-slate-400 py-12">⚠️ No content available or error loading ${clase}.</p>`;
+    return;
+    }
+
+    const formatearTexto = (txt) => txt ? txt.replace(/\[BREAK\]/g, '<br>') : '';
+    let generoVoz = info.voz ? info.voz.toLowerCase().trim() : 'female';
+
+    let videoEmbedHtml = '';
+    if (info.video && info.video.includes('youtube.com/watch?v=')) {
+    let videoId = info.video.split('v=')[1].split('&')[0];
+    videoEmbedHtml = `
+    <div class="mt-6">
+    <h4 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-2">🎥 Class Video Lesson</h4>
+    <div class="aspect-video w-full rounded-xl overflow-hidden shadow-md border border-slate-200">
+    <iframe class="w-full h-full" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+    </div>`;
+    }
+
+    let textoLimpioAudio = '';
+    if (info.dialogo) {
+      textoLimpioAudio = info.dialogo.replace(/['"`]/g, '').replace(/\[BREAK\]/g, '|').trim();
+    }
+
+    container.innerHTML = `
+    <div class="w-full space-y-6 animate-fade-in text-left">
+    <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-2 shadow-sm border-t-4 dinamic-banner">
+    <div>
+    <span class="text-xs font-bold uppercase tracking-wider text-sky-600">Lesson Study Material — ${clase}</span>
+    <h3 class="font-bold text-slate-900 text-xl">${info.titulo || 'Class Notes'}</h3>
+    </div>
+    <span class="text-2xl hidden md:inline">📖</span>
+    </div>
+
+    ${info.dialogo ? `
+    <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+      <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+        <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-4">
+          <img src="${MASCOTA.wink}" class="w-20 h-20 sm:w-24 sm:h-24 object-contain drop-shadow-sm" alt="Wink Bot">
+          <span class="text-base sm:text-lg text-slate-800 font-extrabold">DIALOGUE</span>
+        </h4>
+        <button onclick="reproducirTexto('${textoLimpioAudio}', '${generoVoz}')" class="flex items-center gap-1.5 px-4 py-2 bg-amber-100 text-amber-800 hover:bg-amber-200 font-semibold rounded-full text-xs transition cursor-pointer shadow-sm border border-amber-200">
+          <span>▶</span> Play Dialogue 
+        </button>
+      </div>
+
+      <div class="space-y-4 my-2">
+        ${(() => {
+          const lineasChat = info.dialogo.split('[BREAK]').map(l => l.trim()).filter(l => l.length > 0);
+          let htmlBurbujas = '';
+
+          lineasChat.forEach((linea, index) => {
+            let esMasculino = (generoVoz === 'male');
+            let textoFinal = linea;
+
+            const lineaLower = linea.toLowerCase();
+            if (lineaLower.startsWith('(male)')) {
+              esMasculino = true;
+              textoFinal = linea.substring(6).trim();
+            } else if (lineaLower.startsWith('(female)')) {
+              esMasculino = false;
+              textoFinal = linea.substring(8).trim();
+            }
+
+            let nombrePersonaje = esMasculino ? "Michael" : "Jennifer"; 
+            if (textoFinal.includes(':')) {
+              const partes = textoFinal.split(':');
+              nombrePersonaje = partes[0].trim();
+              textoFinal = partes.slice(1).join(':').trim();
+            }
+
+            const audioIndividualText = textoFinal.replace(/['"`]/g, '').trim();
+
+            if (esMasculino) {
+              htmlBurbujas += `
+                <div class="flex flex-col items-start w-full animate-fade-in">
+                  <span class="text-xs font-bold text-slate-500 ml-2 mb-1">${nombrePersonaje}</span>
+                  <div class="flex items-center gap-2 max-w-[85%] md:max-w-[70%]">
+                    <div class="bg-slate-100 text-slate-800 px-5 py-3 rounded-2xl rounded-tl-none border border-slate-200 shadow-sm text-sm font-medium leading-relaxed">
+                      ${textoFinal}
+                    </div>
+                    <button onclick="reproducirTexto('${audioIndividualText}', 'male')" class="w-7 h-7 flex items-center justify-center bg-slate-50 hover:bg-slate-200 border border-slate-200 rounded-full text-xs text-sky-500 transition shadow-xs cursor-pointer" title="Listen line">
+                      🔊
+                    </button>
+                  </div>
+                </div>
+              `;
+            } else {
+              htmlBurbujas += `
+                <div class="flex flex-col items-end w-full animate-fade-in">
+                  <span class="text-xs font-bold text-slate-500 mr-2 mb-1">${nombrePersonaje}</span>
+                  <div class="flex items-center justify-end gap-2 max-w-[85%] md:max-w-[70%]">
+                    <button onclick="reproducirTexto('${audioIndividualText}', 'female')" class="w-7 h-7 flex items-center justify-center bg-slate-50 hover:bg-slate-200 border border-slate-200 rounded-full text-xs text-sky-500 transition order-1 shadow-xs cursor-pointer" title="Listen line">
+                      🔊
+                    </button>
+                    <div class="bg-gradient-to-r from-amber-500 to-purple-500 text-white px-5 py-3 rounded-2xl rounded-tr-none shadow-md text-sm font-medium leading-relaxed order-2">
+                      ${textoFinal}
+                    </div>
+                  </div>
+                </div>
+              `;
+            }
+          });
+
+          return htmlBurbujas;
+        })()}
+      </div>
+    </div>` : ''}
+
+    ${videoEmbedHtml}
+
+    ${info.regla ? `
+    <div class="space-y-4 my-2">
+      ${(() => {
+        const datosCuriosos = info.regla.split('|').map(f => f.trim()).filter(f => f.length > 0);
+        let htmlCajas = '';
+
+        datosCuriosos.forEach(fact => {
+          htmlCajas += `
+            <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm animate-fade-in">
+              <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-4">
+                <img src="${MASCOTA.surprise}" class="w-20 h-20 sm:w-24 sm:h-24 object-contain drop-shadow-sm" alt="Surprise Bot">
+                <span class="text-base sm:text-lg text-slate-800 font-extrabold">INTERESTING FACT</span>
+              </h4>
+              <p class="text-slate-700 leading-relaxed font-normal text-sm">${formatearTexto(fact)}</p>
+            </div>
+          `;
+        });
+
+        return htmlCajas;
+      })()}
+    </div>` : ''}
+
+    ${info.ejemplos ? `
+    <div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden animate-fade-in">
+      <div class="bg-white border-b border-slate-100 px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <span class="text-lg">📊</span>
+          <h4 class="text-sm font-bold text-slate-950 uppercase tracking-wider">${info.titulo || 'Grammar Reference'}</h4>
+        </div>
+        <button onclick="document.getElementById('tablaEjemplosContainer').classList.toggle('hidden'); this.textContent = this.textContent === 'Visible [-]' ? 'Hidden [+]' : 'Visible [-]';" 
+                class="text-xs font-bold text-amber-500 hover:text-amber-600 transition cursor-pointer">
+          Visible [-]
+        </button>
+      </div>
+
+      <div id="tablaEjemplosContainer" class="overflow-x-auto w-full">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-amber-50/70 border-b border-amber-100">
+              ${(() => {
+                const lineas = info.ejemplos.split('[BREAK]').map(f => f.trim()).filter(f => f.length > 0);
+                if (lineas.length === 0) return '';
+                const encabezados = lineas[0].split('|').map(c => c.trim());
+                return encabezados.map(titulo => `
+                  <th class="px-6 py-3.5 text-xs font-bold text-amber-800 uppercase tracking-wider">${titulo}</th>
+                `).join('');
+              })()}
+            </tr>
+          </thead>
+          <tbody class="text-slate-700 text-sm font-medium">
+            ${(() => {
+              const lineas = info.ejemplos.split('[BREAK]').map(f => f.trim()).filter(f => f.length > 0);
+              if (lineas.length <= 1) return '<tr><td colspan="4" class="p-4 text-center text-slate-400">No data available</td></tr>';
+              
+              let htmlFilas = '';
+              for (let i = 1; i < lineas.length; i++) {
+                const columnas = lineas[i].split('|').map(c => c.trim());
+                const totalColumnas = lineas[0].split('|').length;
+                while(columnas.length < totalColumnas) columnas.push("");
+
+                const claseFondo = (i % 2 === 0) ? 'bg-slate-50/80' : 'bg-white';
+
+                htmlFilas += `
+                  <tr class="${claseFondo} hover:bg-slate-100/50 transition-colors border-b border-slate-100/50 last:border-none">
+                    ${columnas.map((celda, colIndex) => {
+                      const estilosCelda = colIndex === 1 ? 'font-semibold text-slate-700' : 'text-slate-600';
+                      return `<td class="px-6 py-4 ${estilosCelda}">${celda}</td>`;
+                    }).join('')}
+                  </tr>
+                `;
+              }
+
+              return htmlFilas;
+            })()}
+          </tbody>
+        </table>
+      </div>
+    </div>` : ''}
+
+    ${info.formula ? `
+    <div class="bg-slate-900 text-sky-300 rounded-xl p-5 shadow-inner border border-slate-800">
+      <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-2">
+        <span class="text-sm">📐</span> STRUCTURE FORMULA
+      </h4>
+      <div class="font-mono text-base md:text-lg font-semibold tracking-wide bg-slate-950/60 p-3 rounded-lg text-center border border-slate-800">
+        ${info.formula}
+      </div>
+    </div>` : ''}
+    </div>`;
+  });
+}
+
+function revisarRespuestas() {
+const claseActiva = document.getElementById('claseSelect').value; if (!claseActiva) return;
+let respuestasUsuario = {};
+
+ejerciciosActuales.forEach((ej) => {
+let respuesta = ""; let opcionesCargadas = document.getElementsByName(`input-${ej.id}`);
+if (opcionesCargadas.length > 0) {
+for (let i = 0; i < opcionesCargadas.length; i++) { if (opcionesCargadas[i].checked) { respuesta = opcionesCargadas[i].value; break; } }
+} else {
+let inputElement = document.getElementById(`input-${ej.id}`); respuesta = inputElement ? inputElement.value.trim() : "";
+}
+respuestasUsuario[ej.id.toString().trim()] = respuesta;
+});
+
+const btn = document.getElementById('btnRevisar'); btn.disabled = true; btn.textContent = "Checking answers with NEXO AI Teacher...";
+
+fetch(API_URL, {
+  method: "POST",
+  body: JSON.stringify({
+    action: "validarRespuestas",
+    nivel: nivelActual,
+    clase: claseActiva,
+    respuestas: respuestasUsuario
+  })
+})
+.then(res => res.json())
+.then(reporte => {
+  btn.disabled = false; btn.textContent = "Check Answers"; if (reporte.error) { alert("Error: " + reporte.error); return; }
+
+  ejerciciosActuales.forEach((ej) => {
+  let idLimpio = ej.id.toString().trim(); let detalle = reporte.detalles[idLimpio];
+  let feedback = document.getElementById(`feedback-${ej.id}`); let card = document.getElementById(`card-${ej.id}`);
+  if (!feedback || !card || !detalle) return;
+
+  feedback.className = "mt-3 p-3 text-sm rounded-lg border hidden";
+  card.className = "bg-slate-50 border border-slate-200 p-4 rounded-xl shadow-sm transition-colors duration-300";
+
+  if (detalle.esRedaccion) {
+  feedback.classList.remove('hidden'); feedback.classList.add('block', 'bg-sky-50', 'border-sky-200', 'text-sky-900');
+  feedback.innerHTML = `<div class="flex items-center gap-4 mb-2"><img src="${MASCOTA.happy}" class="w-16 h-16 object-contain flex-shrink-0 drop-shadow-sm"><div><strong class="block text-sm">NEXO AI Teacher Feedback:</strong><span class="block text-xs whitespace-pre-wrap mt-1">${detalle.solucion}</span></div></div>`;
+  card.classList.add('bg-sky-50/30', 'border-sky-300');
+  } else {
+  if (detalle.correcto) {
+  feedback.innerHTML = `<div class="flex items-center gap-4"><img src="${MASCOTA.love}" class="w-16 h-16 object-contain flex-shrink-0 drop-shadow-sm"><span class="font-bold text-emerald-800">✓ Correct! Great job</span></div>`; feedback.classList.remove('hidden'); feedback.classList.add('bg-emerald-50', 'border-emerald-200', 'text-emerald-700', 'block');
+  card.classList.add('bg-emerald-50/40', 'border-emerald-300');
+  } else {
+  feedback.innerHTML = `<div class="flex items-center gap-4"><img src="${MASCOTA.error}" class="w-16 h-16 object-contain flex-shrink-0 drop-shadow-sm"><span class="font-medium text-amber-900">Oops, something to check. Correct answer: <strong class="text-slate-900">${detalle.solucion}</strong></span></div>`; feedback.classList.remove('hidden'); feedback.classList.add('bg-amber-50', 'border-amber-200', 'text-amber-800', 'block');
+  card.classList.add('bg-amber-50/40', 'border-amber-300');
+  }
+  }
+  });
+  alert(`Quiz Evaluated!\nScore: ${reporte.correctas} out of ${reporte.total} perfect/approved answers.`);
+})
+.catch(err => {
+  btn.disabled = false; btn.textContent = "Check Answers"; alert("Connection error: " + err.message);
+});
+}
+
+let vozMasculinaGlobal = null;
+let vozFemeninaGlobal = null;
+
+function cargarVocesFijas() {
+  const voces = window.speechSynthesis.getVoices();
+  if (voces.length === 0) return;
+
+  const vocesIngles = voces.filter(v => v.lang.startsWith('en-') || v.lang.toLowerCase() === 'en');
+
+  vozMasculinaGlobal = vocesIngles.find(v => {
+    const name = v.name.toLowerCase();
+    return name.includes('david') || 
+           name.includes('male') || 
+           name.includes('guy') || 
+           name.includes('george') || 
+           name.includes('desktop');
+  }) || vocesIngles.find(v => !v.name.toLowerCase().includes('zira')) || vocesIngles[0];
+
+  vozFemeninaGlobal = vocesIngles.find(v => {
+    const name = v.name.toLowerCase();
+    return name.includes('zira') || 
+           name.includes('female') || 
+           name.includes('hazel') || 
+           name.includes('samantha') ||
+           name.includes('jessica');
+  }) || vocesIngles[0];
+}
+
+if (typeof window !== 'undefined' && window.speechSynthesis) {
+  cargarVocesFijas();
+  window.speechSynthesis.onvoiceschanged = cargarVocesFijas;
+}
+
+function reproducirTexto(texto, generoBase) {
+  if (window.speechSynthesis.speaking) {
+    window.speechSynthesis.cancel();
+  }
+
+  if (!vozMasculinaGlobal || !vozFemeninaGlobal) {
+    cargarVocesFijas();
+  }
+
+  const lineas = texto.split('|'); 
+  const lineasValidas = lineas.map(l => l.trim()).filter(l => l.length > 0);
+
+  if (lineasValidas.length === 0) return;
+
+  lineasValidas.forEach(lineaLimpia => {
+    let usarVozMasculina = (generoBase === 'male');
+    let textoAPronunciar = lineaLimpia;
+
+    const lineaLower = lineaLimpia.toLowerCase();
+    if (lineaLower.startsWith('(male)')) {
+      usarVozMasculina = true;
+      textoAPronunciar = lineaLimpia.substring(6).trim(); 
+    } else if (lineaLower.startsWith('(female)')) {
+      usarVozMasculina = false;
+      textoAPronunciar = lineaLimpia.substring(8).trim();
+    }
+
+    if (textoAPronunciar.includes(':')) {
+      const partes = textoAPronunciar.split(':');
+      textoAPronunciar = partes.slice(1).join(':').trim();
+    }
+
+    if (textoAPronunciar.length > 0) {
+      const utterance = new SpeechSynthesisUtterance(textoAPronunciar);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.88; 
+      utterance.voice = usarVozMasculina ? vozMasculinaGlobal : vozFemeninaGlobal;
+      window.speechSynthesis.speak(utterance);
+    }
+  });
+}
+</script>
+<a href="https://wa.me/@TrocoYT" target="_blank" rel="noopener noreferrer" 
+   class="fixed bottom-5 right-5 z-50 flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-4 py-3 rounded-full shadow-2xl shadow-emerald-500/40 transition-all duration-300 transform hover:scale-105 active:scale-95">
+  
+  <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.572-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+  </svg>
+
+  <span class="text-xs sm:text-sm tracking-wide">BUY PREMIUM</span>
+</a>
+</body>
+</html>
