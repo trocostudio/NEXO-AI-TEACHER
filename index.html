@@ -360,8 +360,6 @@ const MASCOTA = {
   happy: 'https://drive.google.com/thumbnail?id=1YZjb1miAjuFCTRaa8fZTGDSqYldzO987&sz=w800'
 };
 
-const URL_EXAMEN_PREMIUM = "https://script.google.com/macros/s/AKfycbwYXNyI1DMon1qYwbLxB3dDOMpcH1lQ6SMCoUt9J4BBCP0WOL0O5E-vBk7CrxoS9lrb3w/exec";
-
 let ejerciciosActuales = [];
 let datosGlobalesMapeados = {};
 let nivelActual = null;
@@ -412,11 +410,11 @@ function intentarAccesoModo(modo) {
 
 function intentarAccesoExamen() {
   if (!usuarioAutenticado) {
-    accionPendientePostAuth = function() { window.open(URL_EXAMEN_PREMIUM, '_blank'); };
+    accionPendientePostAuth = function() { window.open("test.html", "_blank"); };
     mostrarModalAuth("The Test of English is an exclusive service. Please verify your registered username to unlock the examination.");
     return;
   }
-  window.open(URL_EXAMEN_PREMIUM, '_blank');
+  window.open("test.html", "_blank");
 }
 
 function seleccionarModoLanding(modo) {
